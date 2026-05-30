@@ -1142,7 +1142,10 @@ body {
   <p style="font-size:11px;color:rgba(138,144,153,0.5)">&copy; 2025 PromoMaistor. Всички права запазени.</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+emailjs.init('P4L6cF3dR35oQQkSr');
+
 async function submitOrder(phoneId, successId) {
   const phone = document.getElementById(phoneId).value.trim();
   if (!phone || phone.length < 8) {
@@ -1163,20 +1166,16 @@ async function submitOrder(phoneId, successId) {
     });
   }
 
-  // Send email
+  // Send email via EmailJS
   try {
-    await fetch('https://formsubmit.co/ajax/sales@promomaistor.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        _subject: 'Нова бърза поръчка – STAHLMAYER Exclusive ножове',
-        телефон: phone,
-        продукт: 'Комплект 5 месарски ножа STAHLMAYER Exclusive',
-        цена: '30.17 EUR (59 лв.)',
-        _captcha: 'false'
-      })
+    await emailjs.send('service_pv4vagj', 'template_l818tpq', {
+      телефон: phone,
+      продукт: 'Комплект 5 месарски ножа STAHLMAYER Exclusive',
+      цена: '30.17 EUR (59 лв.)'
     });
-  } catch(e) {}
+  } catch(e) {
+    console.error('EmailJS error:', e);
+  }
 
   document.getElementById(successId).classList.add('show');
   document.getElementById(phoneId).value = '';
